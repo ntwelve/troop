@@ -192,6 +192,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		return output;
 	}
 
-	$(document).ready(load);
+	// Only run in browser environment
+	if (typeof $ !== 'undefined' && $) {
+		$(document).ready(load);
+	}
 
-})(jQuery);
+	// Export functions for testing (Node.js environment)
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = {
+			ucfirst,
+			clean,
+			bodyCanvasWidth,
+			layerMargin,
+			layerAllowMany
+		};
+	}
+
+})(typeof jQuery !== 'undefined' ? jQuery : null);
