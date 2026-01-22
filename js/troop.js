@@ -193,7 +193,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	}
 
 	// Only run in browser environment
-	if (typeof $ !== 'undefined' && $) {
+	if ($) {
 		$(document).ready(load);
 	}
 
