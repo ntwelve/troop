@@ -19,20 +19,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 (function ($) {
+	'use strict';
 
-	var layerData,
-		bodyCanvasWidth = 91,
-		layerMargin = 10,
-		layerAllowMany = {
-			body: false,
-			hair: true,
-			hats: true,
-			pants: false,
-			bottoms: false,
-			tops: true,
-			shoes: false,
-			extras: false
-		};
+	let layerData;
+	const bodyCanvasWidth = 91;
+	const layerMargin = 10;
+	const layerAllowMany = {
+		body: false,
+		hair: true,
+		hats: true,
+		pants: false,
+		bottoms: false,
+		tops: true,
+		shoes: false,
+		extras: false
+	};
 
 	function load() {
 		$(window).resize(onResize);
@@ -49,27 +50,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	}
 
 	function saveImage() {
-		var imageStack = [];
-		var loadRemains = 0;
-		var stackPosition = 0;
-		var buffer = document.createElement('canvas');
+		const imageStack = [];
+		let loadRemains = 0;
+		let stackPosition = 0;
+		const buffer = document.createElement('canvas');
 		buffer.width = 91;
 		buffer.height = 139;
-		var context = buffer.getContext('2d');
-		var toLoad = [];
+		const context = buffer.getContext('2d');
+		const toLoad = [];
 
 		toLoad[0] = {
 			url: 'assets/skeleton.gif',
 			posn: [0, 0]
 		};
 
-		var items = $('#generator #body .item');
+		const items = $('#generator #body .item');
 
 		items.each(function (key) {
 			stackPosition = stackPosition + 1;
-			var curImgPosn = stackPosition;
-			var posn = $(this).css('background-position').replace(/px/g, '').split(' ');
-			var imgUrl = $(this).attr('itemurl');
+			const curImgPosn = stackPosition;
+			const posn = $(this).css('background-position').replace(/px/g, '').split(' ');
+			const imgUrl = $(this).attr('itemurl');
 
 			toLoad[curImgPosn] = {
 				url: imgUrl,
@@ -80,9 +81,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		processQueue();
 
 		function processQueue() {
-			for (i = 0; i < toLoad.length; i++) {
+			for (let i = 0; i < toLoad.length; i++) {
 				loadRemains = loadRemains + 1;
-				var curImg = toLoad[i];
+				const curImg = toLoad[i];
 				console.log(curImg);
 				imageStack[i] = {
 					image: new Image(),
@@ -102,8 +103,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				$.each(imageStack, function (key, item) {
 					context.drawImage(item.image, item.posn[0], item.posn[1]);
 				});
-				var d = new Date();
-				var dateString = '' + d.getDate() + (d.getMonth() + 1) + d.getYear() + d.getHours() + d.getMinutes() + d.getSeconds();
+				const d = new Date();
+				const dateString = '' + d.getDate() + (d.getMonth() + 1) + d.getFullYear() + d.getHours() + d.getMinutes() + d.getSeconds();
 				buffer.toBlob(function (blob) {
 					saveAs(blob, 'avatar_' + dateString + '.png');
 				});
@@ -119,16 +120,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	}
 
 	function generateLayers() {
-		var tabs = $('#generator ul.tabs');
-		var viewer = $('#viewer');
-		for (name in layerData) {
+		const tabs = $('#generator ul.tabs');
+		const viewer = $('#viewer');
+		for (const name in layerData) {
 			tabs.append($('<li id="tab_' + name + '">' + ucfirst(name) + '</li>'));
-			var images = layerData[name];
-			var viewerHtml = '<div class="section" id="section_' + name + '" style="width: ' + (images.length * (layerMargin + bodyCanvasWidth)) + 'px">';
+			const images = layerData[name];
+			let viewerHtml = '<div class="section" id="section_' + name + '" style="width: ' + (images.length * (layerMargin + bodyCanvasWidth)) + 'px">';
 			$.each(images, function (i, image) {
-				var url = 'assets/' + name + '/' + image;
+				const url = 'assets/' + name + '/' + image;
 				try {
-					var posn = image.split('-')[1].replace('.gif', '').split('x');
+					const posn = image.split('-')[1].replace('.gif', '').split('x');
 					viewerHtml += '<div class="layer" style="background-image:url(' + url + ');background-position:' + posn[0] + 'px ' + posn[1] + 'px" rel="' + image + '"></div>';
 				} catch (err) {}
 			});
@@ -142,7 +143,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	}
 
 	function tabClick(e) {
-		var id = $(this).attr('id').replace('tab_', '');
+		const id = $(this).attr('id').replace('tab_', '');
 		$('#generator #viewer .section').hide();
 		$('#generator ul.tabs li').removeClass('selected');
 		$('#section_' + id).show();
@@ -151,14 +152,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	}
 
 	function clickLayer(e) {
-		var image = $(this).attr('rel');
-		var parent = $(this).parent('.section').attr('id').replace('section_', '');
+		const image = $(this).attr('rel');
+		const parent = $(this).parent('.section').attr('id').replace('section_', '');
 		// add layer to body image
-		var selector = '#generator #body #layer_' + parent;
-		var url = 'assets/' + parent + '/' + image;
+		const selector = '#generator #body #layer_' + parent;
+		const url = 'assets/' + parent + '/' + image;
 
 		// determine if we are allowed multiple on this layer
-		var itemId = clean('layer_item_' + parent + '_' + image);
+		const itemId = clean('layer_item_' + parent + '_' + image);
 		if ($('#' + itemId).length) {
 			$('#' + itemId).remove();
 			$(this).removeClass('selected');
@@ -177,7 +178,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	}
 
 	function setViewerWidth() {
-		var freeSpace = ($('#generator').width() - 115);
+		const freeSpace = ($('#generator').width() - 115);
 		$('#viewer').width(freeSpace);
 	}
 
@@ -186,11 +187,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	}
 
 	function clean(string) {
-		response = string.replace('.', '');
-		output = response.replace('-', '');
+		const response = string.replace('.', '');
+		const output = response.replace('-', '');
 		return output;
 	}
 
-	$(document).ready(load);
+	// Only run in browser environment
+	if ($) {
+		$(document).ready(load);
+	}
 
-})(jQuery);
+	// Export functions for testing (Node.js environment)
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = {
+			ucfirst,
+			clean,
+			bodyCanvasWidth,
+			layerMargin,
+			layerAllowMany
+		};
+	}
+
+})(typeof jQuery !== 'undefined' ? jQuery : null);
